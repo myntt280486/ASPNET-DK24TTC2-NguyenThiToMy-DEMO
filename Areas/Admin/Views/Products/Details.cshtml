@@ -1,0 +1,195 @@
+@model Product
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-info-circle"></i> Chi tiết sản phẩm</h2>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Sửa
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-image"></i> Hình ảnh</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="@(Model.ImageUrl ?? "/images/products/default-coffee.jpg")" 
+                     alt="@Model.Name" 
+                     class="img-fluid rounded shadow"
+                     style="max-height: 300px;">
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-cog"></i> Trạng thái</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-2">
+                    <strong>Trạng thái bán:</strong>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Đang bán</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Ngừng bán</span>
+                    }
+                </p>
+                <p class="mb-0">
+                    <strong>Danh mục:</strong>
+                    <span class="badge bg-info">@Model.Category.Name</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Thông tin sản phẩm</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">ID:</div>
+                    <div class="col-md-9">@Model.Id</div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Tên sản phẩm:</div>
+                    <div class="col-md-9">@Model.Name</div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Mô tả:</div>
+                    <div class="col-md-9">@(Model.Description ?? "Chưa có mô tả")</div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Giá:</div>
+                    <div class="col-md-9">
+                        <span class="h4 text-success">@Model.Price.ToString("N0")đ</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Danh mục:</div>
+                    <div class="col-md-9">@Model.Category.Name</div>
+                </div>
+            </div>
+        </div>
+        
+        @if (Model.ProductOptions != null && Model.ProductOptions.Any())
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-sliders-h"></i> Tùy chọn sản phẩm</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Nhóm</th>
+                                    <th>Tên</th>
+                                    <th>Giá điều chỉnh</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var option in Model.ProductOptions.OrderBy(o => o.Group))
+                                {
+                                    <tr>
+                                        <td><span class="badge bg-secondary">@option.Group</span></td>
+                                        <td>@option.Name</td>
+                                        <td>
+                                            @if (option.PriceAdjustment > 0)
+                                            {
+                                                <span class="text-success">+@option.PriceAdjustment.ToString("N0")đ</span>
+                                            }
+                                            else if (option.PriceAdjustment < 0)
+                                            {
+                                                <span class="text-danger">@option.PriceAdjustment.ToString("N0")đ</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">0đ</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        
+        @if (Model.Reviews != null && Model.Reviews.Any())
+        {
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-star"></i> Đánh giá (@Model.Reviews.Count)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Đánh giá trung bình:</strong>
+                        <span class="h5 text-warning">
+                            @Model.Reviews.Average(r => r.Rating).ToString("0.0")
+                            <i class="fas fa-star"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Người dùng</th>
+                                    <th>Đánh giá</th>
+                                    <th>Nhận xét</th>
+                                    <th>Ngày</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedDate).Take(5))
+                                {
+                                    <tr>
+                                        <td>@review.User.FullName</td>
+                                        <td>
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted")"></i>
+                                            }
+                                        </td>
+                                        <td>@(review.Comment ?? "-")</td>
+                                        <td>@review.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    @if (Model.Reviews.Count > 5)
+                    {
+                        <p class="text-muted text-center mb-0">Hiển thị 5 đánh giá gần nhất</p>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Sản phẩm chưa có đánh giá nào.
+            </div>
+        }
+    </div>
+</div>

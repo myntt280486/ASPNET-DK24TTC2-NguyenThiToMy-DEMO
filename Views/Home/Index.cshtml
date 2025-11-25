@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="hero-section text-center py-5" style="background: linear-gradient(135deg, #6f4e37 0%, #d4a574 100%); color: white; border-radius: 15px; margin-bottom: 30px;">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-coffee"></i> Chào mừng đến với Tố My Cafe
+        </h1>
+        <p class="lead mb-4">Thức uống ngon - Phục vụ tận tâm - Giá cả hợp lý</p>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-light btn-lg">
+            <i class="fas fa-mug-hot"></i> Xem thực đơn
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3" style="font-size: 3rem; color: #6f4e37;">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h5 class="card-title">Nguyên liệu tươi ngon</h5>
+                    <p class="card-text">Chúng tôi cam kết sử dụng 100% nguyên liệu tươi ngon, chất lượng cao nhất</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3" style="font-size: 3rem; color: #6f4e37;">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h5 class="card-title">Giao hàng nhanh chóng</h5>
+                    <p class="card-text">Đặt hàng online, giao hàng tận nơi trong vòng 30 phút</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3" style="font-size: 3rem; color: #6f4e37;">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h5 class="card-title">Giá cả hợp lý</h5>
+                    <p class="card-text">Chất lượng cao với mức giá phải chăng, nhiều ưu đãi hấp dẫn</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: #6f4e37;">
+            <i class="fas fa-star"></i> Danh mục sản phẩm
+        </h2>
+        <p class="text-muted">Khám phá các loại thức uống đa dạng của chúng tôi</p>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="1" class="text-decoration-none">
+                <div class="card category-card h-100 text-center border-0 shadow-sm" style="transition: transform 0.3s;">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 4rem; color: #6f4e37;">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <h5 class="card-title" style="color: #3e2723;">Cà phê</h5>
+                        <p class="card-text text-muted">Đậm đà, thơm ngon</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="2" class="text-decoration-none">
+                <div class="card category-card h-100 text-center border-0 shadow-sm" style="transition: transform 0.3s;">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 4rem; color: #6f4e37;">
+                            <i class="fas fa-mug-hot"></i>
+                        </div>
+                        <h5 class="card-title" style="color: #3e2723;">Trà</h5>
+                        <p class="card-text text-muted">Thanh mát, sảng khoái</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="3" class="text-decoration-none">
+                <div class="card category-card h-100 text-center border-0 shadow-sm" style="transition: transform 0.3s;">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 4rem; color: #6f4e37;">
+                            <i class="fas fa-glass-whiskey"></i>
+                        </div>
+                        <h5 class="card-title" style="color: #3e2723;">Nước ép</h5>
+                        <p class="card-text text-muted">Tươi mát, bổ dưỡng</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="4" class="text-decoration-none">
+                <div class="card category-card h-100 text-center border-0 shadow-sm" style="transition: transform 0.3s;">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 4rem; color: #6f4e37;">
+                            <i class="fas fa-blender"></i>
+                        </div>
+                        <h5 class="card-title" style="color: #3e2723;">Sinh tố</h5>
+                        <p class="card-text text-muted">Ngọt ngào, dinh dưỡng</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="text-center py-5" style="background-color: #fff; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <h3 class="fw-bold mb-3" style="color: #6f4e37;">Bắt đầu đặt hàng ngay!</h3>
+        <p class="text-muted mb-4">Đăng ký tài khoản để nhận nhiều ưu đãi hấp dẫn</p>
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg me-2">
+                <i class="fas fa-user-plus"></i> Đăng ký ngay
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Products" asp-action="Index" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-cart"></i> Mua sắm ngay
+            </a>
+        }
+    </div>
+</div>
+
+<style>
+    .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .hero-section {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+</style>

@@ -1,0 +1,82 @@
+@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+
+<h2 class="mb-4" style="color: #6f4e37;">
+    <i class="fas fa-receipt"></i> Đơn hàng của tôi
+</h2>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td><strong>#@order.Id</strong></td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="fw-bold" style="color: #6f4e37;">@order.TotalAmount.ToString("N0")đ</td>
+                        <td>
+                            @switch (order.Status)
+                            {
+                                case OrderStatus.Pending:
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock"></i> Chờ xác nhận
+                                    </span>
+                                    break;
+                                case OrderStatus.Processing:
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-cog"></i> Đang xử lý
+                                    </span>
+                                    break;
+                                case OrderStatus.Shipping:
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-shipping-fast"></i> Đang giao
+                                    </span>
+                                    break;
+                                case OrderStatus.Completed:
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Hoàn thành
+                                    </span>
+                                    break;
+                                case OrderStatus.Cancelled:
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times-circle"></i> Đã hủy
+                                    </span>
+                                    break;
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="fas fa-receipt" style="font-size: 5rem; color: #ddd;"></i>
+        <h4 class="mt-3 text-muted">Bạn chưa có đơn hàng nào</h4>
+        <p class="text-muted">Hãy đặt hàng ngay để trải nghiệm dịch vụ của chúng tôi</p>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-primary">
+            <i class="fas fa-shopping-bag"></i> Mua sắm ngay
+        </a>
+    </div>
+}

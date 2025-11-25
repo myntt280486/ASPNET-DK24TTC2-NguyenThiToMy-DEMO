@@ -1,0 +1,41 @@
+@model IEnumerable<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<h2 class="mb-4"><i class="fas fa-users"></i> Quản lý người dùng</h2>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td><strong>@user.FullName</strong></td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@(user.Address ?? "Chưa cập nhật")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

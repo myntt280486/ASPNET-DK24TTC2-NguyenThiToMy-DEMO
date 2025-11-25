@@ -1,0 +1,97 @@
+@model ApplicationUser
+
+@{
+    ViewData["Title"] = "Chi tiết người dùng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user"></i> Chi tiết người dùng</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-user-circle"></i> Thông tin cá nhân</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Họ tên:</strong> @Model.FullName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>SĐT:</strong> @Model.PhoneNumber</p>
+                <p><strong>Địa chỉ:</strong> @(Model.Address ?? "Chưa cập nhật")</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Thống kê</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Tổng đơn hàng:</strong> @ViewBag.TotalOrders</p>
+                <p><strong>Tổng chi tiêu:</strong> <span class="text-success fw-bold">@ViewBag.TotalSpent.ToString("N0")đ</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-receipt"></i> Lịch sử đơn hàng</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.Orders != null && ((IEnumerable<Order>)ViewBag.Orders).Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in (IEnumerable<Order>)ViewBag.Orders)
+                                {
+                                    <tr>
+                                        <td><strong>#@order.Id</strong></td>
+                                        <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                        <td class="fw-bold text-success">@order.TotalAmount.ToString("N0")đ</td>
+                                        <td>
+                                            @switch (order.Status)
+                                            {
+                                                case OrderStatus.Pending:
+                                                    <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                                                    break;
+                                                case OrderStatus.Processing:
+                                                    <span class="badge bg-info">Đang xử lý</span>
+                                                    break;
+                                                case OrderStatus.Shipping:
+                                                    <span class="badge bg-primary">Đang giao</span>
+                                                    break;
+                                                case OrderStatus.Completed:
+                                                    <span class="badge bg-success">Hoàn thành</span>
+                                                    break;
+                                                case OrderStatus.Cancelled:
+                                                    <span class="badge bg-danger">Đã hủy</span>
+                                                    break;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center py-4">Người dùng chưa có đơn hàng nào</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

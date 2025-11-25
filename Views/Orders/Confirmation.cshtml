@@ -1,0 +1,77 @@
+@model Order
+
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+    </div>
+    
+    <h2 class="text-success mb-3">Đặt hàng thành công!</h2>
+    <p class="lead">Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đang được xử lý.</p>
+    
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header" style="background-color: #6f4e37; color: white;">
+            <h5 class="mb-0"><i class="fas fa-receipt"></i> Thông tin đơn hàng</h5>
+        </div>
+        <div class="card-body text-start">
+            <div class="row mb-2">
+                <div class="col-6 fw-bold">Mã đơn hàng:</div>
+                <div class="col-6">#@Model.Id</div>
+            </div>
+            
+            <div class="row mb-2">
+                <div class="col-6 fw-bold">Ngày đặt:</div>
+                <div class="col-6">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+            
+            <div class="row mb-2">
+                <div class="col-6 fw-bold">Tổng tiền:</div>
+                <div class="col-6 text-danger fw-bold">@Model.TotalAmount.ToString("N0")đ</div>
+            </div>
+            
+            <div class="row mb-2">
+                <div class="col-6 fw-bold">Phương thức thanh toán:</div>
+                <div class="col-6">@Model.PaymentMethod</div>
+            </div>
+            
+            <div class="row mb-2">
+                <div class="col-6 fw-bold">Địa chỉ giao hàng:</div>
+                <div class="col-6">@Model.ShippingAddress</div>
+            </div>
+            
+            <div class="row mb-2">
+                <div class="col-6 fw-bold">Số điện thoại:</div>
+                <div class="col-6">@Model.PhoneNumber</div>
+            </div>
+            
+            <hr>
+            
+            <h6 class="mb-3">Chi tiết đơn hàng:</h6>
+            @foreach (var detail in Model.OrderDetails)
+            {
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <strong>@detail.Product.Name</strong> x @detail.Quantity
+                        @if (!string.IsNullOrEmpty(detail.SelectedOptions))
+                        {
+                            <br><small class="text-muted">@detail.SelectedOptions</small>
+                        }
+                    </div>
+                    <span>@((detail.Price * detail.Quantity).ToString("N0"))đ</span>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-primary me-2">
+            <i class="fas fa-list"></i> Xem đơn hàng của tôi
+        </a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+            <i class="fas fa-home"></i> Về trang chủ
+        </a>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<h2 class="mb-4"><i class="fas fa-receipt"></i> Quản lý đơn hàng</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="btn-group" role="group">
+            <a asp-action="Index" class="btn btn-outline-primary @(ViewBag.CurrentStatus == null ? "active" : "")">
+                Tất cả
+            </a>
+            <a asp-action="Index" asp-route-status="@OrderStatus.Pending" class="btn btn-outline-warning @(ViewBag.CurrentStatus == OrderStatus.Pending ? "active" : "")">
+                Chờ xác nhận
+            </a>
+            <a asp-action="Index" asp-route-status="@OrderStatus.Processing" class="btn btn-outline-info @(ViewBag.CurrentStatus == OrderStatus.Processing ? "active" : "")">
+                Đang xử lý
+            </a>
+            <a asp-action="Index" asp-route-status="@OrderStatus.Shipping" class="btn btn-outline-primary @(ViewBag.CurrentStatus == OrderStatus.Shipping ? "active" : "")">
+                Đang giao
+            </a>
+            <a asp-action="Index" asp-route-status="@OrderStatus.Completed" class="btn btn-outline-success @(ViewBag.CurrentStatus == OrderStatus.Completed ? "active" : "")">
+                Hoàn thành
+            </a>
+            <a asp-action="Index" asp-route-status="@OrderStatus.Cancelled" class="btn btn-outline-danger @(ViewBag.CurrentStatus == OrderStatus.Cancelled ? "active" : "")">
+                Đã hủy
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td><strong>#@order.Id</strong></td>
+                            <td>@order.User.FullName</td>
+                            <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="fw-bold text-success">@order.TotalAmount.ToString("N0")đ</td>
+                            <td>
+                                @switch (order.Status)
+                                {
+                                    case OrderStatus.Pending:
+                                        <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                                        break;
+                                    case OrderStatus.Processing:
+                                        <span class="badge bg-info">Đang xử lý</span>
+                                        break;
+                                    case OrderStatus.Shipping:
+                                        <span class="badge bg-primary">Đang giao</span>
+                                        break;
+                                    case OrderStatus.Completed:
+                                        <span class="badge bg-success">Hoàn thành</span>
+                                        break;
+                                    case OrderStatus.Cancelled:
+                                        <span class="badge bg-danger">Đã hủy</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

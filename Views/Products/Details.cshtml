@@ -1,0 +1,187 @@
+@model Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Sản phẩm</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-5">
+        <img src="@(Model.ImageUrl ?? "/images/products/default-coffee.jpg")" class="img-fluid rounded shadow" alt="@Model.Name">
+    </div>
+    
+    <div class="col-md-7">
+        <h2 style="color: #6f4e37;">@Model.Name</h2>
+        <p class="text-muted">@Model.Category.Name</p>
+        
+        <hr>
+        
+        <h3 class="text-danger mb-3">@Model.Price.ToString("N0")đ</h3>
+        
+        <p class="lead">@Model.Description</p>
+        
+        <form asp-controller="Cart" asp-action="AddToCart" method="post" id="addToCartForm">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            
+            @if (Model.ProductOptions != null && Model.ProductOptions.Any())
+            {
+                var sizeOptions = Model.ProductOptions.Where(o => o.Group == "Size").ToList();
+                var sugarOptions = Model.ProductOptions.Where(o => o.Group == "Đường").ToList();
+                var iceOptions = Model.ProductOptions.Where(o => o.Group == "Đá").ToList();
+                
+                @if (sizeOptions.Any())
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chọn size:</label>
+                        <div class="btn-group d-flex" role="group">
+                            @foreach (var option in sizeOptions)
+                            {
+                                <input type="radio" class="btn-check" name="size" id="size_@option.Id" value="@option.Name" autocomplete="off" checked="@(option.Name == "M")">
+                                <label class="btn btn-outline-primary" for="size_@option.Id">
+                                    @option.Name @(option.PriceAdjustment > 0 ? $"(+{option.PriceAdjustment:N0}đ)" : "")
+                                </label>
+                            }
+                        </div>
+                    </div>
+                }
+                
+                @if (sugarOptions.Any())
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Lượng đường:</label>
+                        <select class="form-select" name="sugar">
+                            @foreach (var option in sugarOptions)
+                            {
+                                <option value="@option.Name">@option.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
+                
+                @if (iceOptions.Any())
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Lượng đá:</label>
+                        <select class="form-select" name="ice">
+                            @foreach (var option in iceOptions)
+                            {
+                                <option value="@option.Name">@option.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
+            }
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold">Số lượng:</label>
+                <input type="number" name="quantity" class="form-control" value="1" min="1" max="99" style="width: 100px;">
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<hr class="my-5">
+
+<div class="reviews-section">
+    <h4 style="color: #6f4e37;"><i class="fas fa-star"></i> Đánh giá sản phẩm</h4>
+    
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        <div class="mb-4">
+            @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedDate))
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">@review.User.FullName</h6>
+                            <small class="text-muted">@review.CreatedDate.ToString("dd/MM/yyyy")</small>
+                        </div>
+                        <div class="mb-2">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted")"></i>
+                            }
+                        </div>
+                        <p class="mb-0">@review.Comment</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+    }
+    
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="card">
+            <div class="card-header" style="background-color: #6f4e37; color: white;">
+                <h5 class="mb-0">Viết đánh giá</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Reviews" asp-action="Create" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Đánh giá của bạn:</label>
+                        <div class="rating-input">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <input type="radio" name="rating" value="@i" id="star@i" required />
+                                <label for="star@i"><i class="fas fa-star"></i></label>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nhận xét:</label>
+                        <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Gửi đánh giá
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .rating-input input {
+        display: none;
+    }
+    
+    .rating-input label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #ddd;
+        margin-right: 5px;
+    }
+    
+    .rating-input input:checked ~ label,
+    .rating-input label:hover,
+    .rating-input label:hover ~ label {
+        color: #ffc107;
+    }
+</style>

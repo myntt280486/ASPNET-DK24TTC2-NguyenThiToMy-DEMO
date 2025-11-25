@@ -1,0 +1,103 @@
+@model CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<h2 class="mb-4" style="color: #6f4e37;">
+    <i class="fas fa-credit-card"></i> Thanh toán đơn hàng
+</h2>
+
+<form asp-action="Checkout" method="post">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header" style="background-color: #6f4e37; color: white;">
+                    <h5 class="mb-0"><i class="fas fa-shipping-fast"></i> Thông tin giao hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ShippingAddress" class="form-label"></label>
+                        <textarea asp-for="ShippingAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ giao hàng chi tiết"></textarea>
+                        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại liên hệ" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="PaymentMethod" class="form-label"></label>
+                        <select asp-for="PaymentMethod" class="form-select">
+                            <option value="">-- Chọn phương thức thanh toán --</option>
+                            <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                            <option value="Banking">Chuyển khoản ngân hàng</option>
+                            <option value="Momo">Ví MoMo</option>
+                            <option value="ZaloPay">ZaloPay</option>
+                        </select>
+                        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header" style="background-color: #6f4e37; color: white;">
+                    <h5 class="mb-0"><i class="fas fa-shopping-bag"></i> Đơn hàng của bạn</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <strong>@item.ProductName</strong> x @item.Quantity
+                                @if (!string.IsNullOrEmpty(item.SelectedOptions))
+                                {
+                                    <br><small class="text-muted">@item.SelectedOptions</small>
+                                }
+                            </div>
+                            <span>@item.Total.ToString("N0")đ</span>
+                        </div>
+                    }
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tạm tính:</span>
+                        <span>@Model.TotalAmount.ToString("N0")đ</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Phí vận chuyển:</span>
+                        <span class="text-success">Miễn phí</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Tổng cộng:</strong>
+                        <strong class="text-danger h5">@Model.TotalAmount.ToString("N0")đ</strong>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-check-circle"></i> Đặt hàng
+                        </button>
+                        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

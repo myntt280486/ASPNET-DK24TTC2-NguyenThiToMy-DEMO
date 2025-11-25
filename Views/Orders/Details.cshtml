@@ -1,0 +1,171 @@
+@model Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Index">Đơn hàng</a></li>
+        <li class="breadcrumb-item active">Chi tiết #@Model.Id</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header" style="background-color: #6f4e37; color: white;">
+                <h5 class="mb-0"><i class="fas fa-receipt"></i> Chi tiết đơn hàng #@Model.Id</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detail in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@(detail.Product.ImageUrl ?? "/images/products/default-coffee.jpg")" 
+                                                 alt="@detail.Product.Name" 
+                                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+                                            <div>
+                                                <strong>@detail.Product.Name</strong>
+                                                @if (!string.IsNullOrEmpty(detail.SelectedOptions))
+                                                {
+                                                    <br><small class="text-muted">@detail.SelectedOptions</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@detail.Price.ToString("N0")đ</td>
+                                    <td>@detail.Quantity</td>
+                                    <td class="fw-bold" style="color: #6f4e37;">@((detail.Price * detail.Quantity).ToString("N0"))đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                                <td class="fw-bold text-danger h5">@Model.TotalAmount.ToString("N0")đ</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header" style="background-color: #6f4e37; color: white;">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Thông tin đơn hàng</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small">Mã đơn hàng</label>
+                    <p class="fw-bold">#@Model.Id</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-muted small">Ngày đặt</label>
+                    <p>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-muted small">Trạng thái</label>
+                    <p>
+                        @switch (Model.Status)
+                        {
+                            case OrderStatus.Pending:
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-clock"></i> Chờ xác nhận
+                                </span>
+                                break;
+                            case OrderStatus.Processing:
+                                <span class="badge bg-info">
+                                    <i class="fas fa-cog"></i> Đang xử lý
+                                </span>
+                                break;
+                            case OrderStatus.Shipping:
+                                <span class="badge bg-primary">
+                                    <i class="fas fa-shipping-fast"></i> Đang giao hàng
+                                </span>
+                                break;
+                            case OrderStatus.Completed:
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle"></i> Hoàn thành
+                                </span>
+                                break;
+                            case OrderStatus.Cancelled:
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-times-circle"></i> Đã hủy
+                                </span>
+                                break;
+                        }
+                    </p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-muted small">Phương thức thanh toán</label>
+                    <p>@Model.PaymentMethod</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-muted small">Tổng tiền</label>
+                    <p class="h4 text-danger">@Model.TotalAmount.ToString("N0")đ</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-3">
+            <div class="card-header" style="background-color: #6f4e37; color: white;">
+                <h5 class="mb-0"><i class="fas fa-shipping-fast"></i> Thông tin giao hàng</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small">Địa chỉ</label>
+                    <p>@Model.ShippingAddress</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-muted small">Số điện thoại</label>
+                    <p>@Model.PhoneNumber</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-grid gap-2">
+            <a asp-action="Index" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-home"></i> Về trang chủ
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border: none;
+    }
+    
+    .table thead {
+        background-color: #f8f9fa;
+    }
+</style>
